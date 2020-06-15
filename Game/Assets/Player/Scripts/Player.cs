@@ -5,8 +5,9 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     // Editor Fields
-    [SerializeField] GameObject groundPosition;
-    [SerializeField] LayerMask  groundLayer;
+    [SerializeField] private GameObject groundPosition;
+    [SerializeField] private LayerMask  groundLayer;
+    [SerializeField] private LayerMask  obstaclesLayer;
 
     // Rb Stuff
     Vector2 currentVelocity;
@@ -20,6 +21,11 @@ public class Player : MonoBehaviour
 
     // Components
     Rigidbody2D rb;
+
+    // Score
+    [SerializeField] private GameObject perfectScorePrefab;
+    [SerializeField] private GameObject middleScorePrefab;
+    [SerializeField] private GameObject lowScorePrefab;
 
     private void Awake()
     {
@@ -35,6 +41,7 @@ public class Player : MonoBehaviour
 
         Grounded();
         Jump();
+        Score();
 
         rb.velocity = currentVelocity;
     }
@@ -73,9 +80,41 @@ public class Player : MonoBehaviour
 
     }
 
+    void Score()
+    {   
+        // Creates a collider to get the obstacle
+        Collider2D obstacle = Physics2D.OverlapCircle(transform.position, 5.5f, obstaclesLayer);
+        if (obstacle != null)
+        {
+            
+            Obstacle obs = obstacle.GetComponent<Obstacle>(); // Gets the obstacle object
 
-    private void OnDrawGizmos()
+            Vector2 closestPoint = obstacle.ClosestPoint(transform.position); // Gets closest point from player position
+            
+            if (transform.position.x > obstacle.transform.position.x && obs.scored == false) // if the obstacle is behind the player
+            {
+                obs.scored = true; // The obstacle can't give a score anymore
+
+
+                if (closestPoint.y - groundPosition.transform.position.y <= -2.5f) // Perfect score
+                    Instantiate(lowScorePrefab, transform.position, perfectScorePrefab.transform.rotation);
+
+                else if (closestPoint.y - groundPosition.transform.position.y > -2.5f && closestPoint.y - groundPosition.transform.position.y < -1f) // Perfect score
+                    Instantiate(middleScorePrefab, transform.position, perfectScorePrefab.transform.rotation);
+
+                else if (closestPoint.y - groundPosition.transform.position.y >= -1f) // Perfect score
+                    Instantiate(perfectScorePrefab, transform.position, perfectScorePrefab.transform.rotation);
+
+            }
+        }
+    }
+
+
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        Gizmos.DrawWireSphere(groundPosition.transform.position, 0.2f);
+        if (collision.gameObject.tag == "obstacle")
+        {
+            LevelManager.running = false;
+        }
     }
 }
