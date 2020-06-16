@@ -66,6 +66,7 @@ public class Player : MonoBehaviour
 
             if (touch.phase == TouchPhase.Began && onGround)
             {
+                SoundManager.PlaySound("jump");  // Plays jump sound
                 currentVelocity.y = jumpSpeed;
                 rb.gravityScale = 0.0f;
                 jumpTimeCounter = Time.time;
@@ -94,16 +95,25 @@ public class Player : MonoBehaviour
             if (transform.position.x > obstacle.transform.position.x && obs.scored == false) // if the obstacle is behind the player
             {
                 obs.scored = true; // The obstacle can't give a score anymore
+                SoundManager.PlaySound("score"); // Plays score sound
 
-
-                if (closestPoint.y - groundPosition.transform.position.y <= -2.5f) // Perfect score
+                if (closestPoint.y - groundPosition.transform.position.y <= -2.5f) // Low score
+                {
                     Instantiate(lowScorePrefab, transform.position, perfectScorePrefab.transform.rotation);
+                    LevelManager.score += 1;
+                }
 
-                else if (closestPoint.y - groundPosition.transform.position.y > -2.5f && closestPoint.y - groundPosition.transform.position.y < -1f) // Perfect score
+                else if (closestPoint.y - groundPosition.transform.position.y > -2.5f && closestPoint.y - groundPosition.transform.position.y < -1f) // Mid score
+                {
                     Instantiate(middleScorePrefab, transform.position, perfectScorePrefab.transform.rotation);
+                    LevelManager.score += 2;
+                }
 
                 else if (closestPoint.y - groundPosition.transform.position.y >= -1f) // Perfect score
+                {
                     Instantiate(perfectScorePrefab, transform.position, perfectScorePrefab.transform.rotation);
+                    LevelManager.score += 3;
+                }
 
             }
         }
@@ -114,7 +124,8 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.tag == "obstacle")
         {
-            LevelManager.running = false;
+            LevelManager.running    = false;
+            LevelManager.gameOver   = true;
         }
     }
 }

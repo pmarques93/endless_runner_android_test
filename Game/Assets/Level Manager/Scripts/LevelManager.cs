@@ -13,10 +13,15 @@ public class LevelManager : MonoBehaviour
 
     // Gameplay
     public static bool running;
+    public static bool gameOver;
+
+    // Score
+    public static int score;
 
     private void Awake()
     {
         running = false;
+        gameOver = false;
     }
 
     private void Start()
