@@ -37,15 +37,17 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        currentVelocity = rb.velocity;
+        if (LevelManager.gameOver == false)
+        {
+            currentVelocity = rb.velocity;
 
-        Grounded();
-        Jump();
-        Score();
+            Grounded();
+            Jump();
+            Score();
 
-        rb.velocity = currentVelocity;
+            rb.velocity = currentVelocity;
+        }
     }
-
 
     void Grounded()
     {
@@ -124,6 +126,12 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.tag == "obstacle")
         {
+            rb.gravityScale = 10f;
+            
+            // Sets highscore
+            if (LevelManager.score > PlayerPrefs.GetInt("Highscore"))
+                PlayerPrefs.SetInt("Highscore", LevelManager.score);
+
             LevelManager.running    = false;
             LevelManager.gameOver   = true;
         }

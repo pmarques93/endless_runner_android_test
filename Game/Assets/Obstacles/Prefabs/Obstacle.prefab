@@ -97,6 +97,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obstacle: {fileID: 6531319235238004449}
+  scored: 0
+  speed: 0
   minSpeed: 10
   maxSpeed: 15
 --- !u!50 &6531319235238004451

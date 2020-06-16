@@ -18,6 +18,7 @@ public class Obstacle : MonoBehaviour
     [HideInInspector] public float speed;
     [SerializeField] private float minSpeed;
     [SerializeField] private float maxSpeed;
+    private bool collided;
 
     void Awake()
     {
@@ -35,17 +36,31 @@ public class Obstacle : MonoBehaviour
 
         // Player can score
         scored = false;
+
+        // Collision
+        collided = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        // On collision with player
+        if (collided) rb.velocity = new Vector2(0f, 0f);
+
         // when it reaches minimum position, creates the next object and destroys itself
         if (transform.position.x < -10.59)
         {
             GameObject next = Instantiate(obstacle) as GameObject;  // instantiates
             next.transform.position = new Vector2(screen.x + 3f, Random.Range(-4.793f, -1.09f)); // with this position
             Destroy(gameObject);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            collided = true;
         }
     }
 }

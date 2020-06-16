@@ -39,13 +39,6 @@ public class LevelManager : MonoBehaviour
         {
             // Spawns player if the player doesn't exist yet
             if (p1 == null) Instantiate(spawnPlayer, spawnPlayerPos.transform.position, spawnPlayer.transform.rotation);
-            Time.timeScale = 1f;
-        }
-
-        // If the game isn't running
-        else if (running == false)
-        {
-            Time.timeScale = 0f;
         }
     }
 }

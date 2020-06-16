@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
 public class GameplayMenu : MonoBehaviour
 {
     // Inspector stuff
@@ -17,9 +18,8 @@ public class GameplayMenu : MonoBehaviour
     private void Update()
     {
         if (LevelManager.gameOver)
-        {
             restartMenu.SetActive(true);
-        }
+
     }
 
     public void Play()
