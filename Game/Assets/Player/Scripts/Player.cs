@@ -20,16 +20,22 @@ public class Player : MonoBehaviour
     private float jumpTimeCounter;
 
     // Components
-    Rigidbody2D rb;
+    private Rigidbody2D rb;
+    private Animator anim;
 
     // Score
     [SerializeField] private GameObject perfectScorePrefab;
     [SerializeField] private GameObject middleScorePrefab;
     [SerializeField] private GameObject lowScorePrefab;
+    [SerializeField] private GameObject perfectScoreNumber;
+    [SerializeField] private GameObject middleScoreNumber;
+    [SerializeField] private GameObject lowScoreNumber;
+    [SerializeField] private Transform  scoreSpawnPosition;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
 
         // Jump timer
         jumpTimeCounter = jumpMaxTime;
@@ -47,6 +53,10 @@ public class Player : MonoBehaviour
 
             rb.velocity = currentVelocity;
         }
+
+        // Animations
+        anim.SetBool("grounded", onGround);
+        anim.SetBool("gameRunning", LevelManager.running);
     }
 
     void Grounded()
@@ -66,7 +76,7 @@ public class Player : MonoBehaviour
         {
             Touch touch = Input.GetTouch(0);
 
-            if (touch.phase == TouchPhase.Began && onGround)
+            if (touch.phase == TouchPhase.Began && onGround && LevelManager.levelTimer > 0.01f)
             {
                 SoundManager.PlaySound("jump");  // Plays jump sound
                 currentVelocity.y = jumpSpeed;
@@ -102,18 +112,21 @@ public class Player : MonoBehaviour
                 if (closestPoint.y - groundPosition.transform.position.y <= -2.5f) // Low score
                 {
                     Instantiate(lowScorePrefab, transform.position, perfectScorePrefab.transform.rotation);
+                    Instantiate(lowScoreNumber, scoreSpawnPosition.transform.position, transform.rotation);
                     LevelManager.score += 1;
                 }
 
                 else if (closestPoint.y - groundPosition.transform.position.y > -2.5f && closestPoint.y - groundPosition.transform.position.y < -1f) // Mid score
                 {
                     Instantiate(middleScorePrefab, transform.position, perfectScorePrefab.transform.rotation);
+                    Instantiate(middleScoreNumber, scoreSpawnPosition.transform.position, transform.rotation);
                     LevelManager.score += 2;
                 }
 
                 else if (closestPoint.y - groundPosition.transform.position.y >= -1f) // Perfect score
                 {
                     Instantiate(perfectScorePrefab, transform.position, perfectScorePrefab.transform.rotation);
+                    Instantiate(perfectScoreNumber, scoreSpawnPosition.transform.position, transform.rotation);
                     LevelManager.score += 3;
                 }
 

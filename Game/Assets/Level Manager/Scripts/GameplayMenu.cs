@@ -30,7 +30,8 @@ public class GameplayMenu : MonoBehaviour
 
     public void Restart()
     {
-        LevelManager.score = 0;
+        LevelManager.score      = 0;
+        LevelManager.levelTimer = 0;
         SceneManager.LoadScene(0);
     }
 
